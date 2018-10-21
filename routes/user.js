@@ -1,46 +1,33 @@
 var passwordHash = require('password-hash');
-
 var mongoModels = require('../mongoModels/index')();
 var User = mongoModels.user();
-
 module.exports = () => {
-
   var result = {};
-
   result.registration = (req, res) => {
     console.log("Inside registration");
     var name = req.body.user.name;
     var email = req.body.user.email;
     var password = req.body.user.password;
-
     if ((typeof name == undefined) || name == "") {
-
       res.json({
         success: false,
         message: "name not defined"
       })
-
     } else if ((typeof email == undefined) || email == "") {
-
       res.json({
         success: false,
         message: "email not defined"
       })
-
     } else if ((typeof password == undefined) || password == "") {
-
       res.json({
         success: false,
         message: "password not defined"
       })
-
     } else {
       User.findOne({
         email: email
       }).exec((err, userInfo) => {
-
         if (userInfo) {
-
           res.json({
             success: false,
             message: "Email already exists."
@@ -71,42 +58,31 @@ module.exports = () => {
             }
           }) //save
         }
-
       }) //findone
-
     } //else
   } //registration
-
   result.login = (req, res) => {
-
     console.log("Inside login");
     //console.log("req.body : " ,req.body.user.email)
     var email = req.body.user.email;
     var password = req.body.user.password;
     //console.log(email , password)
     if (email == undefined || email == "") {
-
       res.json({
         success: false,
         message: "Enter Email.."
       })
-
     } else if (password == undefined || password == "") {
-
       res.json({
         message: "Enter Password.."
       })
-
     } else {
       User.findOne({
         email: email
       }).exec((err, userInfo) => {
-
         //if email is found in database
         if (userInfo) {
-
           var hashPass = (passwordHash.verify(password, userInfo.password));
-          
           if (hashPass == true) {
             res.json({
               success: true,
